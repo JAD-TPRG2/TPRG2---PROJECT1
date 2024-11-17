@@ -26,7 +26,7 @@ import PySimpleGUI as sg
 
 #Where am I?
 hardware_present = False
-try:
+try: # Try to import gpiozero
     from gpiozero import Button, Servo
     from time import sleep
     servo = Servo(17)
@@ -141,6 +141,7 @@ class State(object):
 
 # In the waiting state, the machine waits for the first coin
 class WaitingState(State):
+    """Waiting for the first coin"""
     _NAME = "waiting"
     def update(self, machine):
         if machine.event in machine.COINS:
@@ -149,6 +150,7 @@ class WaitingState(State):
 
 # Additional coins, until a product button is pressed
 class AddCoinsState(State):
+    """Adding coins"""
     _NAME = "add_coins"
     def update(self, machine):
         if machine.event == "RETURN":
@@ -165,6 +167,7 @@ class AddCoinsState(State):
 
 # Print the product being delivered
 class DeliverProductState(State):
+    """Dispense the product"""
     _NAME = "deliver_product"
     def on_entry(self, machine):
         # if hardware is present, dispense the product
@@ -186,6 +189,7 @@ class DeliverProductState(State):
 
 # Count out the change in coins 
 class CountChangeState(State):
+    """Dispense the change"""
     _NAME = "count_change"
     def on_entry(self, machine):
         # Return the change due and change state
@@ -215,10 +219,10 @@ if __name__ == "__main__":
         button = sg.Button(item, font=("Helvetica", 18))
         row = [button]
         coin_col.append(row)
-    
+    # Display total
     total_col = []
     total_col.append([sg.Text("Total: $0.00", font=("Helvetica", 18), key='total')])
-
+    # Display products & prices
     select_col = []
     select_col.append([sg.Text("SELECT ITEM", font=("Helvetica", 24))])
     for item, item_price in VendingMachine.PRODUCTS.items():
